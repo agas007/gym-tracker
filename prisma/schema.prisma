@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("STUDENT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  instructorProfile InstructorProfile?
+  studentProfile    StudentProfile?
+  notifications     Notification[]
+}
+
+model InstructorProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  
+  students StudentProfile[]
+  plans    WorkoutPlan[]
+}
+
+model StudentProfile {
+  id           String @id @default(uuid())
+  userId       String @unique
+  user         User   @relation(fields: [userId], references: [id])
+  
+  instructorId String?
+  instructor   InstructorProfile? @relation(fields: [instructorId], references: [id])
+  
+  plans           WorkoutPlan[]
+  workoutSessions WorkoutSession[]
+}
+
+model Exercise {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  muscleGroup String?
+  VideoUrl    String?
+  
+  routineExercises RoutineExercise[]
+  sessionLogs      SessionLog[]
+}
+
+model WorkoutPlan {
+  id           String @id @default(uuid())
+  name         String
+  description  String?
+  
+  instructorId String
+  instructor   InstructorProfile @relation(fields: [instructorId], references: [id])
+  
+  studentId    String? 
+  student      StudentProfile? @relation(fields: [studentId], references: [id])
+
+  routines     WorkoutRoutine[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model WorkoutRoutine {
+  id        String @id @default(uuid())
+  planId    String
+  plan      WorkoutPlan @relation(fields: [planId], references: [id])
+  name      String
+  
+  exercises RoutineExercise[]
+  sessions  WorkoutSession[]
+}
+
+model RoutineExercise {
+  id        String @id @default(uuid())
+  routineId String
+  routine   WorkoutRoutine @relation(fields: [routineId], references: [id])
+  
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  
+  sets      Int
+  reps      Int
+  rpe       Int?
+  restTime  Int? 
+  order     Int
+}
+
+model WorkoutSession {
+  id        String   @id @default(uuid())
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id])
+  
+  routineId String
+  routine   WorkoutRoutine @relation(fields: [routineId], references: [id])
+  
+  date      DateTime @default(now())
+  status    String   @default("IN_PROGRESS") 
+  
+  logs      SessionLog[]
+}
+
+model SessionLog {
+  id        String   @id @default(uuid())
+  sessionId String
+  session   WorkoutSession @relation(fields: [sessionId], references: [id])
+  
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  
+  setNumber Int
+  weight    Float
+  reps      Int
+  rpe       Int?
+  notes     String?
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  type      String   
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,308 @@
+'use server';
+
+import { signIn, auth } from '@/auth';
+import { AuthError } from 'next-auth';
+import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
+import { redirect } from 'next/navigation';
+import { z } from 'zod';
+
+const StudentSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export async function createStudent(prevState: any, formData: FormData) {
+    const session = await auth();
+    if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+        return { message: 'Unauthorized' };
+    }
+
+    const validatedFields = StudentSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create Student.',
+        };
+    }
+
+    const { name, email, password } = validatedFields.data;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const instructor = await prisma.instructorProfile.findUnique({
+            where: { userId: session.user.id }
+        });
+
+        if (!instructor) return { message: 'Instructor profile not found' };
+
+        await prisma.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword,
+                role: 'STUDENT',
+                studentProfile: {
+                    create: {
+                        instructorId: instructor.id
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        return { message: 'Database Error: Failed to Create Student.' };
+    }
+
+
+    redirect('/instructor/students');
+}
+
+const PlanSchema = z.object({
+  name: z.string().min(1, "Plan Name is required"),
+  description: z.string().optional(),
+  studentIds: z.array(z.string()).optional() // For assigning to multiple students (future feature) but simple select for now
+});
+
+export async function createWorkoutPlan(prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+      return { message: 'Unauthorized' };
+  }
+
+  const name = formData.get('name') as string;
+  const description = formData.get('description') as string;
+
+  if (!name) {
+      return { message: 'Plan Name is required' };
+  }
+
+  try {
+      const instructor = await prisma.instructorProfile.findUnique({
+          where: { userId: session.user.id }
+      });
+
+      if (!instructor) return { message: 'Instructor profile not found' };
+
+      await prisma.workoutPlan.create({
+          data: {
+              name,
+              description,
+              instructorId: instructor.id
+          }
+      });
+  } catch (error) {
+     console.error(error);
+     return { message: 'Database Error: Failed to Create Plan.' };
+  }
+
+
+  redirect('/instructor/plans');
+}
+
+export async function createRoutine(planId: string, prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+      return { message: 'Unauthorized' };
+  }
+
+  const name = formData.get('name') as string;
+  if (!name) {
+      return { message: 'Routine Name is required' };
+  }
+
+  try {
+      const plan = await prisma.workoutPlan.findUnique({
+          where: { id: planId },
+          include: { instructor: true }
+      });
+
+      if (!plan) return { message: 'Plan not found' };
+      if (plan.instructor.userId !== session.user.id) return { message: 'Unauthorized' };
+
+      await prisma.workoutRoutine.create({
+          data: {
+              name,
+              planId: plan.id
+          }
+      });
+  } catch (error) {
+     console.error(error);
+     return { message: 'Database Error: Failed to Create Routine.' };
+  }
+
+
+  redirect(`/instructor/plans/${planId}`);
+}
+
+export async function addExerciseToRoutine(routineId: string, prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+      return { message: 'Unauthorized' };
+  }
+
+  const exerciseId = formData.get('exerciseId') as string;
+  const sets = parseInt(formData.get('sets') as string);
+  const reps = parseInt(formData.get('reps') as string);
+  const rpe = formData.get('rpe') ? parseInt(formData.get('rpe') as string) : null;
+  const restTime = formData.get('restTime') ? parseInt(formData.get('restTime') as string) : null;
+
+  if (!exerciseId || isNaN(sets) || isNaN(reps)) {
+     return { message: 'Exercise, sets, and reps are required.' };
+  }
+
+  try {
+     const routine = await prisma.workoutRoutine.findUnique({
+         where: { id: routineId },
+         include: { exercises: true }
+     });
+
+     if (!routine) return { message: 'Routine not found' };
+
+     // Basic auth check: Check if plan belongs to instructor
+     const plan = await prisma.workoutPlan.findUnique({
+        where: { id: routine.planId },
+        include: { instructor: true }
+     });
+
+     if (plan?.instructor.userId !== session.user.id) return { message: 'Unauthorized' };
+
+     await prisma.routineExercise.create({
+         data: {
+             routineId,
+             exerciseId,
+             sets,
+             reps,
+             rpe,
+             restTime,
+             order: routine.exercises.length + 1
+         }
+     });
+
+  } catch (error) {
+     console.error(error);
+     return { message: 'Database Error: Failed to add exercise.' };
+  }
+
+  // Redirect back to plan details
+  const routine = await prisma.workoutRoutine.findUnique({ where: { id: routineId } });
+
+  redirect(`/instructor/plans/${routine?.planId}`);
+}
+
+export async function assignPlanToStudent(planId: string, prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+      return { message: 'Unauthorized' };
+  }
+
+  const studentId = formData.get('studentId') as string;
+
+  if (!studentId) {
+      return { message: 'Student selection is required' };
+  }
+
+  try {
+     // Check if plan exists and belongs to instructor
+     const plan = await prisma.workoutPlan.findUnique({
+        where: { id: planId },
+        include: { instructor: true }
+     });
+
+     if (!plan) return { message: 'Plan not found' };
+     if (plan.instructor.userId !== session.user.id) return { message: 'Unauthorized' };
+
+     // Check if student exists and belongs to instructor
+     const student = await prisma.studentProfile.findUnique({
+         where: { id: studentId }
+     });
+     
+     if (!student) return { message: 'Student not found' };
+     if (student.instructorId !== plan.instructorId) return { message: 'Unauthorized student' };
+
+     await prisma.workoutPlan.update({
+         where: { id: planId },
+         data: {
+             studentId: studentId
+         }
+     });
+
+  } catch (error) {
+     console.error(error);
+     return { message: 'Database Error: Failed to assign plan.' };
+  }
+
+  redirect(`/instructor/plans/${planId}`);
+}
+
+// Student logging actions
+
+export async function createSession_Action(studentId: string, routineId: string) {
+    const session = await auth();
+    if (!session?.user?.id) return null;
+
+    // TODO: Verify student ID matches logged in user or user has instructor access
+
+    const newSession = await prisma.workoutSession.create({
+        data: {
+            studentId,
+            routineId,
+            status: 'IN_PROGRESS'
+        }
+    });
+
+    return newSession.id;
+}
+
+export async function logSet_Action(data: {
+    sessionId: string;
+    exerciseId: string;
+    setNumber: number;
+    weight: number;
+    reps: number;
+    rpe?: number;
+}) {
+    await prisma.sessionLog.create({
+        data: {
+            sessionId: data.sessionId,
+            exerciseId: data.exerciseId,
+            setNumber: data.setNumber,
+            weight: data.weight,
+            reps: data.reps,
+            rpe: data.rpe
+        }
+    });
+}
+
+export async function finishWorkout_Action(sessionId: string) {
+    await prisma.workoutSession.update({
+        where: { id: sessionId },
+        data: { status: 'COMPLETED' }
+    });
+    redirect('/student');
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
