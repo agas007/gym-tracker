@@ -21,13 +21,19 @@ export default async function AssignPlanPage(props: { params: Promise<{ id: stri
 
   if (!instructorProfile) return <div>Instructor not found</div>;
 
+  const plan = await prisma.workoutPlan.findUnique({
+      where: { id: planId },
+      include: { students: true }
+  });
+
+  const assignedStudentIds = plan?.students.map(s => s.id) || [];
   const students = instructorProfile.students;
 
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-6">Assign Plan to Student</h1>
       <div className="bg-zinc-900 shadow sm:rounded-lg p-6 border border-zinc-800">
-        <AssignPlanForm planId={planId} students={students} />
+        <AssignPlanForm planId={planId} students={students} assignedStudentIds={assignedStudentIds} />
       </div>
     </div>
   );

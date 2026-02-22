@@ -21,7 +21,7 @@ export default async function PlanDetailsPage(props: { params: Promise<{ id: str
           }
         }
       },
-      student: {
+      students: {
           include: {
               user: true
           }
@@ -43,9 +43,9 @@ export default async function PlanDetailsPage(props: { params: Promise<{ id: str
         <div>
             <div className="flex items-center gap-4">
                  <h1 className="text-3xl font-bold">{plan.name}</h1>
-                 {plan.student && (
+                 {plan.students && plan.students.length > 0 && (
                      <span className="inline-flex items-center rounded-md bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30">
-                        Assigned to: {plan.student.user.name}
+                        Assigned to: {plan.students.map((s: any) => s.user.name).join(', ')}
                      </span>
                  )}
             </div>

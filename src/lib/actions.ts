@@ -202,9 +202,9 @@ export async function assignPlanToStudent(planId: string, prevState: any, formDa
       return { message: 'Unauthorized' };
   }
 
-  const studentId = formData.get('studentId') as string;
+  const studentIds = formData.getAll('studentIds') as string[];
 
-  if (!studentId) {
+  if (!studentIds || studentIds.length === 0) {
       return { message: 'Student selection is required' };
   }
 
@@ -218,18 +218,22 @@ export async function assignPlanToStudent(planId: string, prevState: any, formDa
      if (!plan) return { message: 'Plan not found' };
      if (plan.instructor.userId !== session.user.id) return { message: 'Unauthorized' };
 
-     // Check if student exists and belongs to instructor
-     const student = await prisma.studentProfile.findUnique({
-         where: { id: studentId }
+     // Check if all students exist and belong to instructor
+     const students = await prisma.studentProfile.findMany({
+         where: { 
+             id: { in: studentIds },
+             instructorId: plan.instructorId 
+         }
      });
      
-     if (!student) return { message: 'Student not found' };
-     if (student.instructorId !== plan.instructorId) return { message: 'Unauthorized student' };
+     if (students.length !== studentIds.length) return { message: 'One or more invalid students selected' };
 
      await prisma.workoutPlan.update({
          where: { id: planId },
          data: {
-             studentId: studentId
+             students: {
+                 set: studentIds.map(id => ({ id }))
+             }
          }
      });
 

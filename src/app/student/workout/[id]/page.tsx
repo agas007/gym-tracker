@@ -18,13 +18,15 @@ export default async function WorkoutSessionPage(props: { params: Promise<{ id: 
               orderBy: { order: 'asc' }
           },
           plan: {
-              include: { student: true }
+              include: { students: true }
           }
       }
   });
 
   if (!routine) return <div>Routine not found</div>;
-  if (routine.plan.student?.userId !== session.user.id) return <div>Unauthorized</div>;
+  
+  const currentStudent = routine.plan.students.find(s => s.userId === session.user?.id);
+  if (!currentStudent) return <div>Unauthorized</div>;
 
   // Check if there is an active session for today, otherwise create one?
   // For MVP, we'll create a new session when they load this page if one isn't "IN_PROGRESS"
@@ -40,7 +42,7 @@ export default async function WorkoutSessionPage(props: { params: Promise<{ id: 
         <p className="text-gray-400 text-sm">{routine.plan.name}</p>
       </header>
 
-      <WorkoutLogger routine={routine} studentId={routine.plan.student.id} />
+      <WorkoutLogger routine={routine} studentId={currentStudent.id} />
     </div>
   );
 }

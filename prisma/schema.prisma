@@ -64,8 +64,7 @@ model WorkoutPlan {
   instructorId String
   instructor   InstructorProfile @relation(fields: [instructorId], references: [id])
   
-  studentId    String? 
-  student      StudentProfile? @relation(fields: [studentId], references: [id])
+  students     StudentProfile[]
 
   routines     WorkoutRoutine[]
   createdAt    DateTime @default(now())

@@ -18,7 +18,7 @@ function SubmitButton() {
   );
 }
 
-export default function AssignPlanForm({ planId, students }: { planId: string, students: any[] }) {
+export default function AssignPlanForm({ planId, students, assignedStudentIds = [] }: { planId: string, students: any[], assignedStudentIds?: string[] }) {
     const assignPlanWithId = assignPlanToStudent.bind(null, planId);
     // @ts-ignore
   const [state, dispatch] = useActionState(assignPlanWithId, null);
@@ -26,21 +26,37 @@ export default function AssignPlanForm({ planId, students }: { planId: string, s
   return (
     <form action={dispatch} className="space-y-6">
       <div>
-        <label htmlFor="studentId" className="block text-sm font-medium text-gray-300">
-          Select Student
-        </label>
-        <div className="mt-1">
-            <select
-                id="studentId"
-                name="studentId"
-                className="block w-full rounded-md border-0 bg-white/5 py-1.5 px-3 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&>option]:text-black"
-            >
-                <option value="">Select a student...</option>
-                {students.map((student) => (
-                    <option key={student.id} value={student.id}>{student.user.name} ({student.user.email})</option>
-                ))}
-            </select>
-        </div>
+        <fieldset>
+          <legend className="block text-sm font-medium text-gray-300 mb-2">
+            Select Students
+          </legend>
+          <div className="mt-1 space-y-2 border border-zinc-700/50 rounded-md p-3 max-h-60 overflow-y-auto bg-white/5">
+              {students.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic px-2">No students available.</p>
+              ) : (
+                  students.map((student) => (
+                      <div key={student.id} className="relative flex items-start py-1">
+                          <div className="flex h-6 items-center">
+                              <input
+                                  id={`student-${student.id}`}
+                                  name="studentIds"
+                                  type="checkbox"
+                                  value={student.id}
+                                  defaultChecked={assignedStudentIds.includes(student.id)}
+                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 bg-zinc-900 border-zinc-700"
+                              />
+                          </div>
+                          <div className="ml-3 text-sm leading-6">
+                              <label htmlFor={`student-${student.id}`} className="font-medium text-white cursor-pointer select-none flex flex-col">
+                                  <span>{student.user.name}</span>
+                                  <span className="text-gray-400 font-normal text-xs">{student.user.email}</span>
+                              </label>
+                          </div>
+                      </div>
+                  ))
+              )}
+          </div>
+        </fieldset>
       </div>
 
       {state?.message && (
