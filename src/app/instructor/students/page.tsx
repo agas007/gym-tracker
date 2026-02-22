@@ -72,9 +72,9 @@ export default async function StudentsPage() {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-400">{student.user.email}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-400">{student.user.role}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-indigo-400 hover:text-indigo-300">
+                        <Link href={`/instructor/students/${student.id}`} className="text-indigo-400 hover:text-indigo-300">
                           View<span className="sr-only">, {student.user.name}</span>
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   ))}

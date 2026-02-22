@@ -241,6 +241,41 @@ export async function assignPlanToStudent(planId: string, prevState: any, formDa
   redirect(`/instructor/plans/${planId}`);
 }
 
+export async function sendReminder_Action(studentId: string, prevState: any, formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id || session.user.role !== 'INSTRUCTOR') {
+      return { message: 'Unauthorized' };
+  }
+
+  // Get the message from form (default one if empty)
+  const customMessage = formData.get('message') as string;
+  const finalMessage = customMessage ? customMessage : "Don't forget to push yourself today! Your daily workout is waiting for you.";
+
+  try {
+     const student = await prisma.studentProfile.findUnique({
+         where: { id: studentId },
+         include: { user: true }
+     });
+     
+     if (!student) return { message: 'Student not found' };
+
+     await prisma.notification.create({
+         data: {
+             userId: student.userId,
+             message: finalMessage,
+             type: 'REMINDER'
+         }
+     });
+
+  } catch (error) {
+     console.error(error);
+     return { message: 'Database Error: Failed to send reminder.' };
+  }
+
+  // redirect or revalidate path works, returning success message for simple UI feedback
+  return { success: true, message: 'Reminder sent successfully!' };
+}
+
 // Student logging actions
 
 export async function createSession_Action(studentId: string, routineId: string) {
