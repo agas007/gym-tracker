@@ -15,8 +15,8 @@ export const authConfig = {
       if (isOnDashboard || isOnAdmin || isOnInstructor || isOnStudent) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && nextUrl.pathname === '/login') {
-          // Redirect logged-in users away from login
+      } else if (isLoggedIn && (nextUrl.pathname === '/login' || nextUrl.pathname === '/')) {
+          // Redirect logged-in users away from login or landing page directly to their dashboard
            if (auth.user?.role === 'ADMIN') return Response.redirect(new URL('/admin', nextUrl));
            if (auth.user?.role === 'INSTRUCTOR') return Response.redirect(new URL('/instructor', nextUrl));
            if (auth.user?.role === 'STUDENT') return Response.redirect(new URL('/student', nextUrl));

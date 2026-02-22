@@ -1,5 +1,5 @@
 
-import { signOut } from '@/auth';
+import SignOutButton from '@/app/ui/sign-out-button';
 
 export default function StudentLayout({
   children,
@@ -16,14 +16,7 @@ export default function StudentLayout({
           <a href="/student" className="text-gray-300 hover:text-white text-sm">Dashboard</a>
           <a href="/student/workouts" className="text-gray-300 hover:text-white text-sm">Workouts</a>
           <a href="/student/progress" className="text-gray-300 hover:text-white text-sm">Progress</a>
-           <form
-            action={async () => {
-              'use server';
-              await signOut();
-            }}
-          >
-             <button className="text-red-400 hover:text-red-300 text-sm">Logout</button>
-          </form>
+           <SignOutButton className="text-red-400 hover:text-red-300 text-sm" text="Logout" />
       </nav>
     </div>
   )
