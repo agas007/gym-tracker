@@ -7,7 +7,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold text-white tracking-tighter">
-              TITAN<span className="text-indigo-500">GYM</span>
+              MAJAPAHIT<span className="text-indigo-500">GYM</span>
             </Link>
           </div>
           <div className="hidden md:block">

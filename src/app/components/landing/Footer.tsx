@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8">
              <div className="text-2xl font-bold text-white tracking-tighter">
-              TITAN<span className="text-indigo-500">GYM</span>
+              MAJAPAHIT<span className="text-indigo-500">GYM</span>
             </div>
             <p className="text-sm leading-6 text-gray-300">
               Forging elite athletes through data-driven training.
@@ -47,7 +47,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
-          <p className="text-xs leading-5 text-gray-400">&copy; 2024 TitanGym Inc. All rights reserved.</p>
+          <p className="text-xs leading-5 text-gray-400">&copy; 2026 PT Trio Sehat Bersama. All rights reserved.</p>
         </div>
       </div>
     </footer>
