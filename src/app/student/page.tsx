@@ -2,6 +2,7 @@
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import WhatsNewWidget from '@/app/ui/whats-new-widget';
 
 export default async function StudentDashboard() {
   const session = await auth();
@@ -42,6 +43,10 @@ export default async function StudentDashboard() {
         <h2 className="text-2xl font-bold tracking-tight">Your Training Plan</h2>
         <p className="text-gray-400 mt-1">Ready to crush it today, {session.user.name}?</p>
       </header>
+      
+      <div className="mb-8">
+          <WhatsNewWidget />
+      </div>
 
       {!activePlan ? (
           <div className="text-center py-12 bg-zinc-900 border border-zinc-800 rounded-lg">

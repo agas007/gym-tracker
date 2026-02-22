@@ -2,6 +2,7 @@
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import WhatsNewWidget from '@/app/ui/whats-new-widget';
 
 export default async function InstructorDashboard() {
   const session = await auth();
@@ -73,6 +74,8 @@ export default async function InstructorDashboard() {
              </div>
           </div>
         </div>
+        {/* What's New Widget */}
+        <WhatsNewWidget />
       </div>
     </div>
   );
