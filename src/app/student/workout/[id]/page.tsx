@@ -42,7 +42,7 @@ export default async function WorkoutSessionPage(props: { params: Promise<{ id: 
         <p className="text-gray-400 text-sm">{routine.plan.name}</p>
       </header>
 
-      <WorkoutLogger routine={routine} studentId={currentStudent.id} />
+      <WorkoutLogger routine={routine} studentId={currentStudent.id} initialUnit={currentStudent.preferredUnit} />
     </div>
   );
 }

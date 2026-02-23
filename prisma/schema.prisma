@@ -41,6 +41,8 @@ model StudentProfile {
   instructorId String?
   instructor   InstructorProfile? @relation(fields: [instructorId], references: [id])
   
+  preferredUnit   String @default("kg")
+  
   plans           WorkoutPlan[]
   workoutSessions WorkoutSession[]
 }
@@ -121,6 +123,7 @@ model SessionLog {
   
   setNumber Int
   weight    Float
+  weightUnit String   @default("kg")
   reps      Int
   rpe       Int?
   duration  Int?     // Duration in seconds

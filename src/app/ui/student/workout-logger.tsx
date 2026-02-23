@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { logSet_Action, finishWorkout_Action, createSession_Action } from '@/lib/actions';
 
-export default function WorkoutLogger({ routine, studentId }: { routine: any, studentId: string }) {
+export default function WorkoutLogger({ routine, studentId, initialUnit = 'kg' }: { routine: any, studentId: string, initialUnit?: string }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [globalElapsed, setGlobalElapsed] = useState<number>(0);
+  const [currentUnit, setCurrentUnit] = useState(initialUnit);
 
   useEffect(() => {
     if (started && startTime) {
@@ -48,7 +49,7 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
       ) : (
           <div className="space-y-8">
               {/* Global Sticky Timer */}
-              <div className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md py-4 border-b border-zinc-800 text-center mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <div className="sticky top-0 z-10 flex flex-col items-center justify-center gap-2 bg-zinc-950/80 backdrop-blur-md py-4 border-b border-zinc-800 text-center mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
                   <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-full shadow-lg">
                       <span className="relative flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -58,6 +59,21 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
                           {formatTime(globalElapsed)}
                       </span>
                   </div>
+                  
+                  <div className="flex bg-zinc-800 rounded-lg p-1">
+                      <button 
+                          onClick={() => setCurrentUnit('kg')}
+                          className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors ${currentUnit === 'kg' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                      >
+                          KG
+                      </button>
+                      <button 
+                          onClick={() => setCurrentUnit('lbs')}
+                          className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors ${currentUnit === 'lbs' ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white'}`}
+                      >
+                          LBS
+                      </button>
+                  </div>
               </div>
 
               {routine.exercises.map((re: any) => (
@@ -65,6 +81,7 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
                     key={re.id} 
                     routineExercise={re} 
                     sessionId={sessionId!} 
+                    currentUnit={currentUnit}
                   />
               ))}
 
@@ -83,7 +100,7 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
   );
 }
 
-function ExerciseLogger({ routineExercise, sessionId }: { routineExercise: any, sessionId: string }) {
+function ExerciseLogger({ routineExercise, sessionId, currentUnit }: { routineExercise: any, sessionId: string, currentUnit: string }) {
     return (
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden shadow-md">
             <div className="px-4 py-3 bg-zinc-800/50 border-b border-zinc-800">
@@ -110,6 +127,7 @@ function ExerciseLogger({ routineExercise, sessionId }: { routineExercise: any, 
                         setNumber={idx + 1} 
                         routineExercise={routineExercise}
                         sessionId={sessionId}
+                        currentUnit={currentUnit}
                     />
                 ))}
             </div>
@@ -117,7 +135,7 @@ function ExerciseLogger({ routineExercise, sessionId }: { routineExercise: any, 
     )
 }
 
-function SetInput({ setNumber, routineExercise, sessionId }: { setNumber: number, routineExercise: any, sessionId: string }) {
+function SetInput({ setNumber, routineExercise, sessionId, currentUnit }: { setNumber: number, routineExercise: any, sessionId: string, currentUnit: string }) {
     const [logged, setLogged] = useState(false);
     
     // Default values from target
@@ -157,6 +175,7 @@ function SetInput({ setNumber, routineExercise, sessionId }: { setNumber: number
             exerciseId: routineExercise.exercise.id,
             setNumber,
             weight: finalWeight,
+            weightUnit: currentUnit,
             reps,
             rpe,
             duration: elapsed
@@ -183,7 +202,7 @@ function SetInput({ setNumber, routineExercise, sessionId }: { setNumber: number
              </div>
              <input 
                 type="number" 
-                placeholder="kg"
+                placeholder={currentUnit}
                 value={weight}
                 onChange={(e) => setWeight(e.target.value === '' ? '' : parseFloat(e.target.value))}
                 className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-2 text-white text-center text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"

@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import WhatsNewWidget from '@/app/ui/whats-new-widget';
+import UnitSelector from '@/app/ui/student/unit-selector';
 
 export default async function StudentDashboard() {
   const session = await auth();
@@ -39,9 +40,12 @@ export default async function StudentDashboard() {
 
   return (
     <div className="text-white">
-      <header className="mb-6">
-        <h2 className="text-2xl font-bold tracking-tight">Your Training Plan</h2>
-        <p className="text-gray-400 mt-1">Ready to crush it today, {session.user.name}?</p>
+      <header className="mb-6 flex flex-col gap-4">
+        <div>
+           <h2 className="text-2xl font-bold tracking-tight">Your Training Plan</h2>
+           <p className="text-gray-400 mt-1">Ready to crush it today, {session.user.name}?</p>
+        </div>
+        <UnitSelector initialUnit={studentProfile.preferredUnit} />
       </header>
       
       <div className="mb-8">

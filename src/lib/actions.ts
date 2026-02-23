@@ -5,6 +5,7 @@ import { AuthError } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const StudentSchema = z.object({
@@ -304,6 +305,7 @@ export async function logSet_Action(data: {
     exerciseId: string;
     setNumber: number;
     weight: number;
+    weightUnit: string;
     reps: number;
     rpe?: number;
     duration?: number;
@@ -314,11 +316,28 @@ export async function logSet_Action(data: {
             exerciseId: data.exerciseId,
             setNumber: data.setNumber,
             weight: data.weight,
+            weightUnit: data.weightUnit,
             reps: data.reps,
             rpe: data.rpe,
             duration: data.duration
         }
     });
+}
+
+export async function updatePreferredUnit_Action(unit: string) {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, message: 'Unauthorized' };
+
+    try {
+        await prisma.studentProfile.update({
+            where: { userId: session.user.id },
+            data: { preferredUnit: unit }
+        });
+        revalidatePath('/student');
+        return { success: true };
+    } catch (e) {
+        return { success: false, message: 'Failed to update preferred unit' };
+    }
 }
 
 export async function finishWorkout_Action(sessionId: string, duration?: number) {
