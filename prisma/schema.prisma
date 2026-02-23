@@ -103,8 +103,8 @@ model WorkoutSession {
   studentId String
   student   StudentProfile @relation(fields: [studentId], references: [id])
   
-  routineId String
-  routine   WorkoutRoutine @relation(fields: [routineId], references: [id])
+  routineId String?
+  routine   WorkoutRoutine? @relation(fields: [routineId], references: [id])
   
   date      DateTime @default(now())
   status    String   @default("IN_PROGRESS") 

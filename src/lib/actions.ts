@@ -283,7 +283,7 @@ export async function sendReminder_Action(studentId: string, prevState: any, for
 
 // Student logging actions
 
-export async function createSession_Action(studentId: string, routineId: string) {
+export async function createSession_Action(studentId: string, routineId?: string) {
     const session = await auth();
     if (!session?.user?.id) return null;
 
@@ -292,7 +292,7 @@ export async function createSession_Action(studentId: string, routineId: string)
     const newSession = await prisma.workoutSession.create({
         data: {
             studentId,
-            routineId,
+            routineId: routineId || null,
             status: 'IN_PROGRESS'
         }
     });

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import WhatsNewWidget from '@/app/ui/whats-new-widget';
 import UnitSelector from '@/app/ui/student/unit-selector';
+import WorkoutCalendar from '@/app/ui/student/workout-calendar';
 
 export default async function StudentDashboard() {
   const session = await auth();
@@ -42,7 +43,7 @@ export default async function StudentDashboard() {
     <div className="text-white">
       <header className="mb-6 flex flex-col gap-4">
         <div>
-           <h2 className="text-2xl font-bold tracking-tight">Your Training Plan</h2>
+           <h2 className="text-2xl font-bold tracking-tight">Home</h2>
            <p className="text-gray-400 mt-1">Ready to crush it today, {session.user.name}?</p>
         </div>
         <UnitSelector initialUnit={studentProfile.preferredUnit} />
@@ -50,6 +51,19 @@ export default async function StudentDashboard() {
       
       <div className="mb-8">
           <WhatsNewWidget />
+      </div>
+
+      <WorkoutCalendar studentId={studentProfile.id} />
+
+      {/* Freestyle Workout Button */}
+      <div className="mb-8 bg-zinc-900 border border-zinc-800 rounded-lg p-5 flex items-center justify-between">
+          <div>
+              <h3 className="text-white font-bold text-lg">Freestyle Workout</h3>
+              <p className="text-sm text-gray-400">Do your own custom training today</p>
+          </div>
+          <Link href="/student/workout/blank" className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-bold shadow transition-transform transform hover:scale-105 inline-block whitespace-nowrap">
+              Start
+          </Link>
       </div>
 
       {!activePlan ? (
