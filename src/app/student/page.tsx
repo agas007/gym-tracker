@@ -5,6 +5,7 @@ import Link from 'next/link';
 import WhatsNewWidget from '@/app/ui/whats-new-widget';
 import UnitSelector from '@/app/ui/student/unit-selector';
 import WorkoutCalendar from '@/app/ui/student/workout-calendar';
+import DailyWeightLogger from '@/app/ui/student/daily-weight-logger';
 
 export default async function StudentDashboard() {
   const session = await auth();
@@ -36,6 +37,12 @@ export default async function StudentDashboard() {
     return <div className="text-white">Profile not found. Please contact your coach.</div>;
   }
 
+  // Fetch today's or latest body measurement
+  const latestMeasurement = await prisma.bodyMeasurement.findFirst({
+      where: { studentId: studentProfile.id },
+      orderBy: { date: 'desc' }
+  });
+
   // Assuming active plan is the most recent one or handles multiple. For now, take the first one.
   const activePlan = studentProfile.plans[0];
 
@@ -48,6 +55,9 @@ export default async function StudentDashboard() {
         </div>
         <UnitSelector initialUnit={studentProfile.preferredUnit} />
       </header>
+
+      {/* Daily Weight Logger */}
+      <DailyWeightLogger initialWeight={latestMeasurement?.weight || ''} />
       
       <div className="mb-8">
           <WhatsNewWidget />

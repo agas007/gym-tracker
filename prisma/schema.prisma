@@ -42,9 +42,23 @@ model StudentProfile {
   instructor   InstructorProfile? @relation(fields: [instructorId], references: [id])
   
   preferredUnit   String @default("kg")
+  age             Int?
+  gender          String?
+  height          Float? // in cm
   
   plans           WorkoutPlan[]
   workoutSessions WorkoutSession[]
+  bodyMeasurements BodyMeasurement[]
+}
+
+model BodyMeasurement {
+  id        String   @id @default(uuid())
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id])
+  
+  date      DateTime @default(now())
+  weight    Float    // Always store as standard (kg) or respect preferredUnit, let's keep it numeric
+  bmi       Float?
 }
 
 model Exercise {

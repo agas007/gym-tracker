@@ -4,12 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   HomeIcon, 
-  UserGroupIcon, 
+  ChartBarIcon, 
   UserIcon 
 } from '@heroicons/react/24/outline';
 import { 
   HomeIcon as HomeIconSolid, 
-  UserGroupIcon as UserGroupIconSolid, 
+  ChartBarIcon as ChartBarIconSolid, 
   UserIcon as UserIconSolid 
 } from '@heroicons/react/24/solid';
 
@@ -43,10 +43,10 @@ const NAV_ITEMS = [
     activeIcon: DumbbellSolid,
   },
   {
-    name: 'Coach',
-    href: '/student/coach',
-    icon: UserGroupIcon,
-    activeIcon: UserGroupIconSolid,
+    name: 'Progress',
+    href: '/student/progress',
+    icon: ChartBarIcon,
+    activeIcon: ChartBarIconSolid,
   },
   {
     name: 'Profile',

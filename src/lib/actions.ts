@@ -370,6 +370,84 @@ export async function authenticate(
   }
 }
 
+export async function updatePersonalData_Action(data: { age: number | null, gender: string | null, height: number | null }) {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, message: 'Unauthorized' };
+
+    try {
+        await prisma.studentProfile.update({
+            where: { userId: session.user.id },
+            data: {
+                age: data.age,
+                gender: data.gender,
+                height: data.height
+            }
+        });
+        revalidatePath('/student/profile');
+        revalidatePath('/student');
+        return { success: true };
+    } catch (e) {
+        return { success: false, message: 'Failed to update personal data' };
+    }
+}
+
+export async function logBodyMeasurement_Action(data: { weight: number }) {
+    const session = await auth();
+    if (!session?.user?.id) return { success: false, message: 'Unauthorized' };
+
+    const profile = await prisma.studentProfile.findUnique({
+        where: { userId: session.user.id }
+    });
+
+    if (!profile) return { success: false, message: 'Profile not found' };
+
+    let bmi = null;
+    if (profile.height && data.weight) {
+        const heightMeters = profile.height / 100;
+        bmi = data.weight / (heightMeters * heightMeters);
+        // Round to 1 decimal place
+        bmi = Math.round(bmi * 10) / 10;
+    }
+
+    try {
+        // Find if they already logged today
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const existingLog = await prisma.bodyMeasurement.findFirst({
+            where: {
+                studentId: profile.id,
+                date: {
+                    gte: today,
+                    lt: tomorrow
+                }
+            }
+        });
+
+        if (existingLog) {
+            await prisma.bodyMeasurement.update({
+                where: { id: existingLog.id },
+                data: { weight: data.weight, bmi }
+            });
+        } else {
+            await prisma.bodyMeasurement.create({
+                data: {
+                    studentId: profile.id,
+                    weight: data.weight,
+                    bmi
+                }
+            });
+        }
+        revalidatePath('/student');
+        revalidatePath('/student/progress');
+        return { success: true };
+    } catch (e) {
+        return { success: false, message: 'Failed to log measurement' };
+    }
+}
+
 export async function logOut_Action() {
   await signOut({ redirectTo: '/' });
 }
