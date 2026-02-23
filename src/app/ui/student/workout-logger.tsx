@@ -222,7 +222,16 @@ function SetInput({ setNumber, routineExercise, sessionId, currentUnit }: { setN
                  value={rpe || ''}
                  min="1"
                  max="10"
-                 onChange={(e) => setRpe(parseInt(e.target.value))}
+                 onChange={(e) => {
+                     if (e.target.value === '') {
+                         setRpe(NaN as any);
+                         return;
+                     }
+                     const val = parseInt(e.target.value);
+                     if (val > 10) setRpe(10);
+                     else if (val < 1) setRpe(1);
+                     else setRpe(val);
+                 }}
                  className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-2 text-white text-center text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                  disabled={logged}
              />
