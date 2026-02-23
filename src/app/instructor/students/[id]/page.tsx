@@ -96,7 +96,7 @@ export default async function StudentDetailPage({
                       <div key={ws.id} className="border-l-2 border-indigo-500 pl-4 py-2">
                           <div className="flex justify-between items-center mb-3">
                              <div>
-                                 <h3 className="text-lg font-bold text-white">{ws.routine.name}</h3>
+                                 <h3 className="text-lg font-bold text-white">{ws.routine?.name || 'Freestyle Workout'}</h3>
                                  <p className="text-xs text-gray-400">{new Date(ws.date).toLocaleDateString()} - {new Date(ws.date).toLocaleTimeString()}</p>
                              </div>
                              <span className={`px-2 py-1 text-xs rounded-full ${ws.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>

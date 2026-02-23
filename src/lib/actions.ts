@@ -49,6 +49,7 @@ export async function createStudent(prevState: any, formData: FormData) {
                 email,
                 password: hashedPassword,
                 role: 'STUDENT',
+                mustChangePassword: true,
                 studentProfile: {
                     create: {
                         instructorId: instructor.id
