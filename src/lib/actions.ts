@@ -306,6 +306,7 @@ export async function logSet_Action(data: {
     weight: number;
     reps: number;
     rpe?: number;
+    duration?: number;
 }) {
     await prisma.sessionLog.create({
         data: {
@@ -314,15 +315,19 @@ export async function logSet_Action(data: {
             setNumber: data.setNumber,
             weight: data.weight,
             reps: data.reps,
-            rpe: data.rpe
+            rpe: data.rpe,
+            duration: data.duration
         }
     });
 }
 
-export async function finishWorkout_Action(sessionId: string) {
+export async function finishWorkout_Action(sessionId: string, duration?: number) {
     await prisma.workoutSession.update({
         where: { id: sessionId },
-        data: { status: 'COMPLETED' }
+        data: { 
+            status: 'COMPLETED',
+            duration: duration
+        }
     });
     redirect('/student');
 }

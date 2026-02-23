@@ -106,6 +106,7 @@ model WorkoutSession {
   
   date      DateTime @default(now())
   status    String   @default("IN_PROGRESS") 
+  duration  Int?     // Duration in seconds
   
   logs      SessionLog[]
 }
@@ -122,6 +123,7 @@ model SessionLog {
   weight    Float
   reps      Int
   rpe       Int?
+  duration  Int?     // Duration in seconds
   notes     String?
 }
 

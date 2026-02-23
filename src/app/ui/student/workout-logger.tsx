@@ -1,20 +1,37 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { logSet_Action, finishWorkout_Action, createSession_Action } from '@/lib/actions';
 
 export default function WorkoutLogger({ routine, studentId }: { routine: any, studentId: string }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
-  const [logs, setLogs] = useState<Record<string, any[]>>({}); // exerciseId -> logs
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [globalElapsed, setGlobalElapsed] = useState<number>(0);
+
+  useEffect(() => {
+    if (started && startTime) {
+      const interval = setInterval(() => {
+        setGlobalElapsed(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [started, startTime]);
 
   const startWorkout = async () => {
       const id = await createSession_Action(studentId, routine.id);
       if (id) {
           setSessionId(id);
+          setStartTime(Date.now());
           setStarted(true);
       }
+  };
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
   };
 
   return (
@@ -30,6 +47,19 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
         </div>
       ) : (
           <div className="space-y-8">
+              {/* Global Sticky Timer */}
+              <div className="sticky top-0 z-10 bg-zinc-950/80 backdrop-blur-md py-4 border-b border-zinc-800 text-center mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+                  <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700 px-4 py-2 rounded-full shadow-lg">
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                      </span>
+                      <span className="font-mono text-xl text-white font-semibold">
+                          {formatTime(globalElapsed)}
+                      </span>
+                  </div>
+              </div>
+
               {routine.exercises.map((re: any) => (
                   <ExerciseLogger 
                     key={re.id} 
@@ -40,9 +70,9 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
 
               <div className="pt-8 pb-12">
                    <form action={async () => {
-                       await finishWorkout_Action(sessionId!);
+                       await finishWorkout_Action(sessionId!, globalElapsed);
                    }}>
-                       <button className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-lg">
+                       <button className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-lg shadow-[0_0_15px_rgba(220,38,38,0.5)] transition hover:shadow-[0_0_25px_rgba(220,38,38,0.8)]">
                            FINISH WORKOUT
                        </button>
                    </form>
@@ -54,15 +84,26 @@ export default function WorkoutLogger({ routine, studentId }: { routine: any, st
 }
 
 function ExerciseLogger({ routineExercise, sessionId }: { routineExercise: any, sessionId: string }) {
-    const [setsLogged, setSetsLogged] = useState(0);
-
     return (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden shadow-md">
             <div className="px-4 py-3 bg-zinc-800/50 border-b border-zinc-800">
-                <h3 className="font-bold text-white">{routineExercise.exercise.name}</h3>
-                <p className="text-xs text-gray-400">Target: {routineExercise.sets} sets x {routineExercise.reps} reps</p>
+                <h3 className="font-bold text-white text-lg">{routineExercise.exercise.name}</h3>
+                <p className="text-sm text-gray-400">Target: {routineExercise.sets} sets x {routineExercise.reps} reps</p>
             </div>
+            
             <div className="p-4 space-y-3">
+                {/* Labels Row */}
+                <div className="flex items-center gap-2 px-1 pb-2 border-b border-zinc-800/50 mb-4">
+                     {/* 24px + 10px margin equivalent space for alignment */}
+                     <div className="w-[85px] text-left text-xs font-semibold text-gray-500 uppercase flex-shrink-0">Set / Time</div>
+                     <div className="w-16 text-center text-xs font-semibold text-gray-500 uppercase">Weight</div>
+                     <div className="w-16 text-center text-xs font-semibold text-gray-500 uppercase">Reps</div>
+                     <div className="w-16 text-center text-xs font-semibold text-gray-500 uppercase cursor-help" title="Rate of Perceived Exertion (1=Easy, 10=Max Effort)">
+                         RPE <span className="text-[10px] text-gray-600 block leading-none">(1-10)</span>
+                     </div>
+                     <div className="w-8 ml-auto"></div>
+                </div>
+
                 {Array.from({ length: routineExercise.sets }).map((_, idx) => (
                     <SetInput 
                         key={idx} 
@@ -80,31 +121,72 @@ function SetInput({ setNumber, routineExercise, sessionId }: { setNumber: number
     const [logged, setLogged] = useState(false);
     
     // Default values from target
-    const [weight, setWeight] = useState(0); 
+    const [weight, setWeight] = useState<number | ''>(''); 
     const [reps, setReps] = useState(routineExercise.reps);
     const [rpe, setRpe] = useState(routineExercise.rpe || 8);
 
+    // Timer state
+    const [isRunning, setIsRunning] = useState(false);
+    const [elapsed, setElapsed] = useState(0);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isRunning && !logged) {
+            interval = setInterval(() => {
+                setElapsed(prev => prev + 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isRunning, logged]);
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    };
+
+    const toggleTimer = () => {
+        setIsRunning(!isRunning);
+    };
+
     const handleLog = async () => {
+        setIsRunning(false);
+        const finalWeight = weight === '' ? 0 : weight;
         await logSet_Action({
             sessionId,
             exerciseId: routineExercise.exercise.id,
             setNumber,
-            weight,
+            weight: finalWeight,
             reps,
-            rpe
+            rpe,
+            duration: elapsed
         });
         setLogged(true);
     };
 
     return (
-        <div className={`flex items-center gap-2 ${logged ? 'opacity-50' : ''}`}>
-             <div className="w-6 text-center text-gray-500 text-sm font-medium">{setNumber}</div>
+        <div className={`flex items-center gap-2 ${logged ? 'opacity-50 grayscale transition-all duration-500' : ''}`}>
+             <div className="w-[85px] flex items-center gap-2 flex-shrink-0">
+                 <div className="w-4 font-bold text-gray-400 text-sm select-none">{setNumber}</div>
+                 <button 
+                     onClick={toggleTimer}
+                     disabled={logged}
+                     className={`w-14 rounded text-xs font-mono py-1.5 transition-colors border shadow-sm ${
+                         logged ? 'bg-zinc-800 text-zinc-500 border-zinc-700' : 
+                         isRunning ? 'bg-amber-600 hover:bg-amber-500 text-white border-amber-500' : 
+                         elapsed > 0 ? 'bg-zinc-700 hover:bg-zinc-600 text-indigo-300 border-zinc-600' : 
+                         'bg-indigo-600 hover:bg-indigo-500 text-white border-indigo-500'
+                     }`}
+                 >
+                     {elapsed > 0 || isRunning ? formatTime(elapsed) : '▶ Start'}
+                 </button>
+             </div>
              <input 
                 type="number" 
                 placeholder="kg"
-                value={weight || ''}
-                onChange={(e) => setWeight(parseFloat(e.target.value))}
-                className="w-20 bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-white text-center"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-2 text-white text-center text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 disabled={logged}
              />
              <input 
@@ -112,23 +194,25 @@ function SetInput({ setNumber, routineExercise, sessionId }: { setNumber: number
                 placeholder="reps"
                 value={reps}
                 onChange={(e) => setReps(parseInt(e.target.value))}
-                className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-white text-center"
+                className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-2 text-white text-center text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 disabled={logged}
              />
              <input 
                  type="number" 
                  placeholder="RPE"
                  value={rpe || ''}
+                 min="1"
+                 max="10"
                  onChange={(e) => setRpe(parseInt(e.target.value))}
-                 className="w-14 bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-white text-center text-xs"
+                 className="w-16 bg-zinc-950 border border-zinc-700 rounded px-2 py-2 text-white text-center text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                  disabled={logged}
              />
              <button 
                 onClick={handleLog}
                 disabled={logged}
-                className={`w-8 h-8 flex items-center justify-center rounded ${logged ? 'bg-green-600 text-white' : 'bg-zinc-700 text-gray-300'}`}
+                className={`w-10 h-10 ml-auto flex items-center justify-center rounded-lg shadow transition-colors ${logged ? 'bg-green-600 text-white shadow-[0_0_10px_rgba(22,163,74,0.3)]' : 'bg-green-500 hover:bg-green-400 text-white'}`}
              >
-                 {logged ? '✓' : '+'}
+                 {logged ? '✓' : '✓'}
              </button>
         </div>
     )
