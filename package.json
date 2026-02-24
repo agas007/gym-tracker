@@ -40,6 +40,8 @@
     "typescript": "^5"
   },
   "overrides": {
-    "minimatch": "^10.2.1"
+    "minimatch": "^10.2.1",
+    "lodash": "^4.17.23",
+    "hono": "^4.12.2"
   }
 }
