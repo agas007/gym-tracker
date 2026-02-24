@@ -5,12 +5,14 @@ import { usePathname } from 'next/navigation';
 import { 
   HomeIcon, 
   ChartBarIcon, 
-  UserIcon 
+  UserIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { 
   HomeIcon as HomeIconSolid, 
   ChartBarIcon as ChartBarIconSolid, 
-  UserIcon as UserIconSolid 
+  UserIcon as UserIconSolid,
+  UserGroupIcon as UserGroupIconSolid
 } from '@heroicons/react/24/solid';
 
 // Dumbbell SVG
@@ -47,6 +49,12 @@ const NAV_ITEMS = [
     href: '/student/progress',
     icon: ChartBarIcon,
     activeIcon: ChartBarIconSolid,
+  },
+  {
+    name: 'Coach',
+    href: '/student/coach',
+    icon: UserGroupIcon,
+    activeIcon: UserGroupIconSolid,
   },
   {
     name: 'Profile',
