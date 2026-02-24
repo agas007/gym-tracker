@@ -43,8 +43,8 @@ export default async function WorkoutCalendar({ studentId }: { studentId: string
             <div className="flex justify-between items-center gap-1">
                 {weekDates.map((date, i) => {
                     const isToday = new Date().toDateString() === date.toDateString();
-                    const sessionForDay = recentSessions.find(s => new Date(s.date).toDateString() === date.toDateString());
-                    const completed = sessionForDay?.status === 'COMPLETED';
+                    const sessionsForDay = recentSessions.filter(s => new Date(s.date).toDateString() === date.toDateString());
+                    const completed = sessionsForDay.some(s => s.status === 'COMPLETED');
 
                     return (
                         <div key={i} className="flex flex-col items-center flex-1">
@@ -67,7 +67,7 @@ export default async function WorkoutCalendar({ studentId }: { studentId: string
             </div>
             {recentSessions.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-zinc-800">
-                    <p className="text-xs text-indigo-400 font-medium">{recentSessions.length} workout{recentSessions.length > 1 ? 's' : ''} completed this week</p>
+                    <p className="text-xs text-indigo-400 font-medium">{recentSessions.filter(s => s.status === 'COMPLETED').length} workout{recentSessions.filter(s => s.status === 'COMPLETED').length !== 1 ? 's' : ''} completed this week</p>
                 </div>
             )}
         </div>
