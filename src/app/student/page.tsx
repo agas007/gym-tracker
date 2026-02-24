@@ -37,9 +37,20 @@ export default async function StudentDashboard() {
     return <div className="text-white">Profile not found. Please contact your coach.</div>;
   }
 
-  // Fetch today's or latest body measurement
-  const latestMeasurement = await prisma.bodyMeasurement.findFirst({
-      where: { studentId: studentProfile.id },
+  // Fetch today's body measurement
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date(todayStart);
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const todaysMeasurement = await prisma.bodyMeasurement.findFirst({
+      where: { 
+          studentId: studentProfile.id,
+          date: {
+              gte: todayStart,
+              lte: todayEnd,
+          }
+      },
       orderBy: { date: 'desc' }
   });
 
@@ -57,7 +68,7 @@ export default async function StudentDashboard() {
       </header>
 
       {/* Daily Weight Logger */}
-      <DailyWeightLogger initialWeight={latestMeasurement?.weight || ''} />
+      <DailyWeightLogger initialWeight={todaysMeasurement?.weight || ''} />
       
       <div className="mb-8">
           <WhatsNewWidget />
