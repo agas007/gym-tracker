@@ -35,9 +35,14 @@ export default async function AdminUsersPage() {
                     <h2 className="text-2xl font-bold">Manage Users</h2>
                     <p className="text-gray-400">View and manage system personnel.</p>
                 </div>
-                <Link href="/admin/users/new" className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded font-bold shadow transition-colors">
-                    Add Instructor
-                </Link>
+                <div className="flex gap-3">
+                    <Link href="/admin/users/new-student" className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded font-bold shadow transition-colors">
+                        Add Student
+                    </Link>
+                    <Link href="/admin/users/new" className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded font-bold shadow transition-colors">
+                        Add Instructor
+                    </Link>
+                </div>
             </div>
 
             <div className="space-y-8">
