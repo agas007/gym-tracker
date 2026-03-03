@@ -1,0 +1,88 @@
+{
+  "AdminUsersPage": {
+    "title": "Manage Users",
+    "description": "View and manage system personnel.",
+    "addStudent": "Add Student",
+    "addInstructor": "Add Instructor",
+    "instructorsCount": "Instructors ({count})",
+    "studentsCount": "All Students ({count})",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "assignedStudents": "Assigned Students",
+      "assignedCoach": "Assigned Coach",
+      "addedOn": "Added On",
+      "unassigned": "Unassigned",
+      "noInstructors": "No instructors found.",
+      "noStudents": "No students found."
+    }
+  },
+  "AdminDashboard": {
+    "welcome": "Welcome, Admin",
+    "description": "Manage your gym users and system settings here."
+  },
+  "AdminProfile": {
+    "title": "Admin Profile",
+    "name": "Name",
+    "email": "Email",
+    "userNotFound": "User not found"
+  },
+  "AdminLayout": {
+    "adminPanel": "Admin Panel",
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "profile": "Profile",
+      "signOut": "Sign Out"
+    }
+  },
+  "Landing": {
+    "Navbar": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "signIn": "Sign In",
+      "login": "Login"
+    },
+    "Hero": {
+      "titlePart1": "Forge Your Legacy with",
+      "titlePart2": "Precision Tracking",
+      "description": "The ultimate platform for serious athletes and coaches. Track workouts, analyze progress, and conquer your goals with data-driven insights.",
+      "getStarted": "Get Started",
+      "learnMore": "Learn more"
+    },
+    "Features": {
+      "badge": "Train Smarter",
+      "title": "Everything you need to reach your peak",
+      "description": "Designed by athletes, for athletes. We cut out the noise and focus on the metrics that matter.",
+      "feature1": {
+        "name": "Advanced Tracking",
+        "description": "Log every rep, set, and RPE with precision. Visualize your progress over time with interactive charts."
+      },
+      "feature2": {
+        "name": "Instructor Connect",
+        "description": "Seamlessly connect with your personal trainer. receive custom workout plans and get real-time feedback."
+      },
+      "feature3": {
+        "name": "Performance Analytics",
+        "description": "Deep dive into your training data. Identify strengths, weaknesses, and optimize your routine for maximum gains."
+      }
+    },
+    "Pricing": {
+      "title": "Simple, transparent pricing",
+      "description": "Choose the plan that fits your ambition. No hidden fees.",
+      "planName": "Lifetime Access (Early Bird)",
+      "planDescription": "Get full access to all future updates and premium features for a one-time payment. Limited time offer.",
+      "whatsIncluded": "What’s included",
+      "features": ["Private forum access", "Member resources", "Entry to annual conference", "Official member t-shirt"],
+      "payOnce": "Pay once, own it forever",
+      "getAccess": "Get access",
+      "notes": "Invoices and receipts available for easy company reimbursement"
+    },
+    "Footer": {
+      "tagline": "Forging elite athletes through data-driven training.",
+      "solutions": "Solutions",
+      "support": "Support",
+      "rights": "© 2026 PT Trio Sehat Bersama. All rights reserved."
+    }
+  }
+}

@@ -1,4 +1,8 @@
-export default function Footer() {
+import { getTranslations } from 'next-intl/server';
+
+export default async function Footer() {
+  const t = await getTranslations('Landing.Footer');
+  
   return (
     <footer className="bg-zinc-950" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">
@@ -11,7 +15,7 @@ export default function Footer() {
               MAJAPAHIT<span className="text-indigo-500">GYM</span>
             </div>
             <p className="text-sm leading-6 text-gray-300">
-              Forging elite athletes through data-driven training.
+              {t('tagline')}
             </p>
             <div className="flex space-x-6">
               {/* Social icons placeholders */}
@@ -20,7 +24,7 @@ export default function Footer() {
           <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
-                <h3 className="text-sm font-semibold leading-6 text-white">Solutions</h3>
+                <h3 className="text-sm font-semibold leading-6 text-white">{t('solutions')}</h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {['Tracking', 'Analytics', 'Coaching', 'Insights'].map((item) => (
                     <li key={item}>
@@ -32,7 +36,7 @@ export default function Footer() {
                 </ul>
               </div>
               <div className="mt-10 md:mt-0">
-                <h3 className="text-sm font-semibold leading-6 text-white">Support</h3>
+                <h3 className="text-sm font-semibold leading-6 text-white">{t('support')}</h3>
                 <ul role="list" className="mt-6 space-y-4">
                   {['Pricing', 'Documentation', 'Guides', 'API Status'].map((item) => (
                     <li key={item}>
@@ -47,7 +51,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
-          <p className="text-xs leading-5 text-gray-400">&copy; 2026 PT Trio Sehat Bersama. All rights reserved.</p>
+          <p className="text-xs leading-5 text-gray-400">{t('rights')}</p>
         </div>
       </div>
     </footer>

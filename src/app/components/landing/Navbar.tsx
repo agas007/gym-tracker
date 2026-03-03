@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import LanguageSwitcher from '@/app/ui/LanguageSwitcher';
+import { getTranslations } from 'next-intl/server';
 
-export default function Navbar() {
+export default async function Navbar() {
+  const t = await getTranslations('Landing.Navbar');
   return (
     <nav className="bg-zinc-950/80 backdrop-blur-md fixed w-full z-50 top-0 border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,28 +14,29 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+            <div className="ml-10 flex items-center space-x-4">
               <Link href="#features" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Features
+                {t('features')}
               </Link>
               <Link href="#pricing" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Pricing
+                {t('pricing')}
               </Link>
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20"
               >
-                Sign In
+                {t('signIn')}
               </Link>
             </div>
           </div>
-          <div className="-mr-2 flex md:hidden">
-            {/* Mobile menu button placeholder */}
+          <div className="-mr-2 flex items-center md:hidden gap-3">
+            <LanguageSwitcher />
             <Link
                 href="/login"
                 className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                Login
+                {t('login')}
               </Link>
           </div>
         </div>

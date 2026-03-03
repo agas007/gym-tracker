@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
-export default function Hero() {
+export default async function Hero() {
+  const t = await getTranslations('Landing.Hero');
   return (
     <div className="relative isolate pt-14">
       <div
@@ -19,20 +21,20 @@ export default function Hero() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-              Forge Your Legacy with <span className="text-indigo-500">Precision Tracking</span>
+              {t('titlePart1')} <span className="text-indigo-500">{t('titlePart2')}</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-300">
-              The ultimate platform for serious athletes and coaches. Track workouts, analyze progress, and conquer your goals with data-driven insights.
+              {t('description')}
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href="/login"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200"
               >
-                Get Started
+                {t('getStarted')}
               </Link>
               <Link href="#features" className="text-sm font-semibold leading-6 text-white hover:text-indigo-400 transition-colors">
-                Learn more <span aria-hidden="true">→</span>
+                {t('learnMore')} <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>

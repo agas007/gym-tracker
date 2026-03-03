@@ -1,0 +1,93 @@
+{
+  "AdminUsersPage": {
+    "title": "Kelola Pengguna",
+    "description": "Lihat dan kelola personel sistem.",
+    "addStudent": "Tambah Siswa",
+    "addInstructor": "Tambah Instruktur",
+    "instructorsCount": "Instruktur ({count})",
+    "studentsCount": "Semua Siswa ({count})",
+    "table": {
+      "name": "Nama",
+      "email": "Email",
+      "assignedStudents": "Siswa Ditugaskan",
+      "assignedCoach": "Pelatih Ditugaskan",
+      "addedOn": "Ditambahkan Pada",
+      "unassigned": "Belum Ditugaskan",
+      "noInstructors": "Tidak ada instruktur ditemukan.",
+      "noStudents": "Tidak ada siswa ditemukan."
+    }
+  },
+  "AdminDashboard": {
+    "welcome": "Selamat Datang, Admin",
+    "description": "Kelola pengguna gym dan pengaturan sistem Anda di sini."
+  },
+  "AdminProfile": {
+    "title": "Profil Admin",
+    "name": "Nama",
+    "email": "Email",
+    "userNotFound": "Pengguna tidak ditemukan"
+  },
+  "AdminLayout": {
+    "adminPanel": "Panel Admin",
+    "nav": {
+      "dashboard": "Dasbor",
+      "users": "Pengguna",
+      "profile": "Profil",
+      "signOut": "Keluar"
+    }
+  },
+  "Landing": {
+    "Navbar": {
+      "features": "Fitur",
+      "pricing": "Harga",
+      "signIn": "Masuk",
+      "login": "Masuk"
+    },
+    "Hero": {
+      "titlePart1": "Bentuk Legenda Anda dengan",
+      "titlePart2": "Pencatatan Presisi",
+      "description": "Platform terbaik untuk atlet dan pelatih serius. Lacak latihan, analisis kemajuan, dan capai tujuan Anda dengan wawasan berbasis data.",
+      "getStarted": "Mulai Sekarang",
+      "learnMore": "Pelajari lebih lanjut"
+    },
+    "Features": {
+      "badge": "Latihan Lebih Cerdas",
+      "title": "Semua yang Anda butuhkan untuk mencapai puncak performa",
+      "description": "Diciptakan oleh atlet, untuk atlet. Kami menghilangkan kebisingan dan fokus pada metrik yang penting.",
+      "feature1": {
+        "name": "Pelacakan Lanjutan",
+        "description": "Catat setiap repetisi, set, dan RPE dengan presisi. Visualisasikan kemajuan Anda dari waktu ke waktu dengan grafik interaktif."
+      },
+      "feature2": {
+        "name": "Hubungan Instruktur",
+        "description": "Terhubung dengan mulus dengan pelatih pribadi Anda. Terima rencana latihan khusus dan dapatkan umpan balik secara langsung."
+      },
+      "feature3": {
+        "name": "Analitik Performa",
+        "description": "Menyelam lebih dalam ke data pelatihan Anda. Identifikasi kekuatan, kelemahan, dan optimalkan rutinitas Anda demi hasil maksimal."
+      }
+    },
+    "Pricing": {
+      "title": "Harga yang simpel dan transparan",
+      "description": "Pilih paket yang sesuai dengan ambisi Anda. Tanpa biaya tersembunyi.",
+      "planName": "Akses Seumur Hidup (Bonus Awal)",
+      "planDescription": "Dapatkan akses penuh ke seluruh pembaruan mendatang dan fitur premium dengan cukup satu kali bayar. Promo terbatas.",
+      "whatsIncluded": "Apa yang Termasuk",
+      "features": [
+        "Akses ke forum ekslusif",
+        "Sumber daya anggota",
+        "Tiket masuk konferensi tahunan",
+        "Kaos anggota resmi"
+      ],
+      "payOnce": "Bayar sekali, miliki selamanya",
+      "getAccess": "Dapatkan akses",
+      "notes": "Faktur dan tanda terima disediakan untuk memudahkan klaim perusahaan"
+    },
+    "Footer": {
+      "tagline": "Mencetak atlet elit tanpa batas dengan pelatihan berbasis data.",
+      "solutions": "Solusi",
+      "support": "Dukungan",
+      "rights": "© 2026 PT Trio Sehat Bersama. Hak Cipta Dilindungi Undang-Undang."
+    }
+  }
+}
