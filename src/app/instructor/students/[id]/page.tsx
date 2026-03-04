@@ -19,6 +19,19 @@ export default async function StudentDetailPage({
 
   if (!instructorProfile) return <div>Instructor not found</div>;
 
+  // Automatically update past uncompleted sessions for this student
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  await prisma.workoutSession.updateMany({
+    where: {
+      studentId: studentId,
+      status: 'IN_PROGRESS',
+      date: { lt: todayStart }
+    },
+    data: { status: 'INCOMPLETE' }
+  });
+
   const student = await prisma.studentProfile.findFirst({
     where: { 
         id: studentId,
@@ -99,7 +112,7 @@ export default async function StudentDetailPage({
                                  <h3 className="text-lg font-bold text-white">{ws.routine?.name || 'Freestyle Workout'}</h3>
                                  <p className="text-xs text-gray-400">{new Date(ws.date).toLocaleDateString()} - {new Date(ws.date).toLocaleTimeString()}</p>
                              </div>
-                             <span className={`px-2 py-1 text-xs rounded-full ${ws.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
+                             <span className={`px-2 py-1 text-xs rounded-full ${ws.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : ws.status === 'INCOMPLETE' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'}`}>
                                  {ws.status}
                              </span>
                           </div>

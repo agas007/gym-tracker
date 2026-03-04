@@ -43,6 +43,16 @@ export default async function StudentDashboard() {
   const todayEnd = new Date(todayStart);
   todayEnd.setHours(23, 59, 59, 999);
 
+  // Automatically update past uncompleted sessions
+  await prisma.workoutSession.updateMany({
+    where: {
+      studentId: studentProfile.id,
+      status: 'IN_PROGRESS',
+      date: { lt: todayStart }
+    },
+    data: { status: 'INCOMPLETE' }
+  });
+
   const todaysMeasurement = await prisma.bodyMeasurement.findFirst({
       where: { 
           studentId: studentProfile.id,
