@@ -21,6 +21,20 @@
     "welcome": "Selamat Datang, Admin",
     "description": "Kelola pengguna gym dan pengaturan sistem Anda di sini."
   },
+  "AdminDashboardStats": {
+    "title": "Statistik Sistem",
+    "totalUsers": "Total Pengguna",
+    "totalInstructors": "Total Instruktur",
+    "totalStudents": "Total Siswa",
+    "topInstructorsTitle": "Instruktur Teratas",
+    "topInstructorsDesc": "Instruktur yang menangani paling banyak siswa",
+    "students": "siswa",
+    "filterAll": "Semua Waktu",
+    "filterYearly": "Tahun Ini",
+    "filterMonthly": "Bulan Ini",
+    "filterWeekly": "Minggu Ini",
+    "filterDaily": "Hari Ini"
+  },
   "AdminProfile": {
     "title": "Profil Admin",
     "name": "Nama",

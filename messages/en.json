@@ -21,6 +21,20 @@
     "welcome": "Welcome, Admin",
     "description": "Manage your gym users and system settings here."
   },
+  "AdminDashboardStats": {
+    "title": "System Statistics",
+    "totalUsers": "Total Users",
+    "totalInstructors": "Total Instructors",
+    "totalStudents": "Total Students",
+    "topInstructorsTitle": "Top Instructors",
+    "topInstructorsDesc": "Instructors handling the most students",
+    "students": "students",
+    "filterAll": "All Time",
+    "filterYearly": "This Year",
+    "filterMonthly": "This Month",
+    "filterWeekly": "This Week",
+    "filterDaily": "Today"
+  },
   "AdminProfile": {
     "title": "Admin Profile",
     "name": "Name",
