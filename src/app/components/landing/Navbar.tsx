@@ -10,7 +10,7 @@ export default async function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold text-white tracking-tighter">
-              MAJAPAHIT<span className="text-indigo-500">GYM</span>
+              ATLAS<span className="text-indigo-500">TRACK</span>
             </Link>
           </div>
           <div className="hidden md:block">

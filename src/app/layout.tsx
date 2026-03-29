@@ -11,13 +11,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Gym Tracker - Elevate Your Training",
-  description: "Track your workouts, follow expert routines, and measure progress with a premium Gym Tracking experience.",
+  title: "Atlas Track - Gym Progress Tracker",
+  description: "Track your gym workouts, monitor progress, and stay consistent with Atlas Track.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Gym Tracker",
+    title: "Atlas Track",
   },
 };
 

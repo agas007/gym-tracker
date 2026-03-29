@@ -58,9 +58,9 @@
       "login": "Masuk"
     },
     "Hero": {
-      "titlePart1": "Bentuk Legenda Anda dengan",
-      "titlePart2": "Pencatatan Presisi",
-      "description": "Platform terbaik untuk atlet dan pelatih serius. Lacak latihan, analisis kemajuan, dan capai tujuan Anda dengan wawasan berbasis data.",
+      "titlePart1": "Bangun Performa Terbaikmu dengan",
+      "titlePart2": "Atlas Track",
+      "description": "Platform fokus untuk tracking progress gym. Catat latihan, pantau tren performa, dan jaga konsistensi menuju target kebugaranmu.",
       "getStarted": "Mulai Sekarang",
       "learnMore": "Pelajari lebih lanjut"
     },
@@ -89,9 +89,7 @@
       "whatsIncluded": "Apa yang Termasuk",
       "features": [
         "Akses ke forum ekslusif",
-        "Sumber daya anggota",
-        "Tiket masuk konferensi tahunan",
-        "Kaos anggota resmi"
+        "Sumber daya anggota"
       ],
       "payOnce": "Bayar sekali, miliki selamanya",
       "getAccess": "Dapatkan akses",

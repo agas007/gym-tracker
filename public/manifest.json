@@ -1,7 +1,7 @@
 {
-  "name": "Gym Tracker",
-  "short_name": "Gym Tracker",
-  "description": "Your ultimate companion for lifting performance, progressive overload, and intelligent fitness coaching.",
+  "name": "Atlas Track",
+  "short_name": "Atlas Track",
+  "description": "Track gym workouts, monitor progress, and improve consistency with Atlas Track.",
   "start_url": "/login",
   "scope": "/",
   "display": "standalone",

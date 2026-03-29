@@ -12,7 +12,7 @@ export default async function Footer() {
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8">
              <div className="text-2xl font-bold text-white tracking-tighter">
-              MAJAPAHIT<span className="text-indigo-500">GYM</span>
+              ATLAS<span className="text-indigo-500">TRACK</span>
             </div>
             <p className="text-sm leading-6 text-gray-300">
               {t('tagline')}

@@ -60,7 +60,7 @@ export default function PwaInstallPrompt() {
         <div className="fixed bottom-20 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:w-80 bg-zinc-800 border border-zinc-700 p-4 rounded-xl shadow-2xl z-50 flex items-center justify-between animate-fade-in-up">
             <div className="mr-4">
                 <h4 className="text-white font-bold text-sm mb-1">Install App</h4>
-                <p className="text-xs text-zinc-400">Add Gym Tracker to your home screen for faster access.</p>
+                <p className="text-xs text-zinc-400">Add Atlas Track to your home screen for faster access.</p>
             </div>
             <div className="flex flex-col gap-2 shrink-0">
                 <button 

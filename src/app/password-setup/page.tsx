@@ -22,7 +22,7 @@ export default async function PasswordSetupPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col items-center p-4">
             <div className="w-full max-w-md mt-12 mb-6 text-center">
-                <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-2">Gym Tracker</h1>
+                <h1 className="text-3xl font-black text-white italic tracking-tighter uppercase mb-2">Atlas Track</h1>
                 <p className="text-gray-400 text-sm">Action Required: Update Password</p>
             </div>
             

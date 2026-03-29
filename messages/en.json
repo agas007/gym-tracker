@@ -58,9 +58,9 @@
       "login": "Login"
     },
     "Hero": {
-      "titlePart1": "Forge Your Legacy with",
-      "titlePart2": "Precision Tracking",
-      "description": "The ultimate platform for serious athletes and coaches. Track workouts, analyze progress, and conquer your goals with data-driven insights.",
+      "titlePart1": "Build Your Best Body with",
+      "titlePart2": "Atlas Track",
+      "description": "A focused platform for gym progress tracking. Log workouts, monitor performance trends, and stay consistent with your fitness goals.",
       "getStarted": "Get Started",
       "learnMore": "Learn more"
     },
@@ -89,9 +89,7 @@
       "whatsIncluded": "What’s included",
       "features": [
         "Private forum access",
-        "Member resources",
-        "Entry to annual conference",
-        "Official member t-shirt"
+        "Member resources"
       ],
       "payOnce": "Pay once, own it forever",
       "getAccess": "Get access",
